@@ -20,8 +20,7 @@ REQUEST GET:
 http://localhost:8082/users
 RESPONSE:
 
-```
-#!JSON
+```JSON
 [{"ID":6,"CreatedAt":"2020-05-18T14:51:18.219384+06:00","UpdatedAt":"2020-05-18T14:51:18.219384+06:00","DeletedAt":null,"name":"TEST_USER","email":"test@gmail.com","birthday":"1998-09-01"}]
 ```
 
@@ -29,14 +28,12 @@ RESPONSE:
 REQUEST POST:
 http://localhost:8082/users
 BODY:
-```
-#!JSON
+```JSON
 {"name":"TEST_USER", "email":"test@gmail.com","birthday":"1999-09-01"}
 ```
 
 RESPONSE:
-```
-#!JSON
+```JSON
 {"id":1, "name":"TEST_USER", "email":"test@gmail.com","birthday":"1999-09-01",CreatedAt":"2020-05-18T17:40:59.5283223+06:00","UpdatedAt":"2020-05-18T17:40:59.5283223+06:00"}
 
 ```
@@ -46,14 +43,12 @@ RESPONSE:
 REQUEST POST:
 http://localhost:8082/users/{id}
 BODY:
-```
-#!JSON
+```JSON
 {"id":1,"name":"TEST_USER_NAME", "email":"test@gmail.com","birthday":"1999-09-01"}
 ```
 
 RESPONSE:
-```
-#!JSON
+```JSON
 {"id":1, "name":"TEST_USER_NAME", "email":"test@gmail.com","birthday":"1999-09-01",CreatedAt":"2020-05-18T17:40:59.5283223+06:00","UpdatedAt":"2020-05-19T17:40:59.5283223+06:00"}
 ```
 
