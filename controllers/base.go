@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
@@ -18,9 +19,12 @@ type App struct {
 
 func (a *App) Initialize(DbHost, DbPort, DbUser, DbName, DbPassword string) {
 	var err error
-	DBURI := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", DbHost, DbPort, DbUser, DbName, DbPassword)
+	//DBURI := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", DbHost, DbPort, DbUser, DbName, DbPassword)
 
-	a.DB, err = gorm.Open("postgres", DBURI)
+	DBURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True", DbUser, DbPassword,DbHost, DbPort, DbName)
+	println(DBURI)
+	a.DB, err = gorm.Open("mysql", DBURI)
+		//"root:admin@tcp(127.0.0.1:3306)/godb?charset=utf8&parseTime=True")
 	if err != nil {
 		fmt.Printf("\n Cannot connect to database %s", DbName)
 		log.Fatal("This is the error:", err)
@@ -35,6 +39,20 @@ func (a *App) Initialize(DbHost, DbPort, DbUser, DbName, DbPassword string) {
 		a.DB.Debug().AutoMigrate(&model.User{})
 	}
 
+	a.DB.Debug().AutoMigrate(&model.Course{})
+
+	a.DB.Exec("DROP PROCEDURE load_market_course;")
+
+	a.DB.Exec("CREATE PROCEDURE load_market_course(" +
+		" IN p_xml text," +
+		" OUT retcode numeric," +
+		" OUT rettext VARCHAR(255))" +
+		" BEGIN" +
+		" select c.retcode,c.rettext INTO RETCODE, RETTEXT" +
+		" from courses c where c.p_xml = p_xml limit 1;" +
+		" END;")
+
+
 	a.Router = mux.NewRouter().StrictSlash(true)
 	a.initializeRoutes()
 }
@@ -44,6 +62,7 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/users", a.createUser).Methods("POST")
 	a.Router.HandleFunc("/users/{id}", a.deleteUser).Methods("DELETE")
 	a.Router.HandleFunc("/users/{id}", a.updateUser).Methods("POST")
+	a.Router.HandleFunc("/course", a.loadCourse).Methods("POST")
 }
 
 func (a *App) RunServer() {
