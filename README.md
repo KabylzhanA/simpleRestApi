@@ -10,6 +10,7 @@ go get github.com/jinzhu/gorm
 go get github.com/joho/godotenv
 go get github.com/gorilla/mux
 go get github.com/lib/pq
+go get github.com/jinzhu/gorm/dialects/mysql
 ```
 
 ## CONTROLLERS ##
@@ -64,4 +65,19 @@ http://localhost:8082/users/{id}
 RESPONSE:
 ```
 true
+```
+
+
+*LOAD COURSE*
+REQUEST POST:
+http://localhost:8082/course
+BODY:
+```
+Kazakhstan
+```
+RESPONSE:
+```
+#!JSON
+{"retcode":1, "rettext":"KZ"}
+
 ```
